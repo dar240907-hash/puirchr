@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -8,7 +9,7 @@ from google import genai
 from google.genai import types
 # НАСТРОЙКА GOOGLE GEMINI AI
 # Ограничения бесплатного тарифа: 15 запросов в минуту
-GOOGLE_API_KEY = "AQ.Ab8RN6LB8YilLElMsVMpGYraB0at3XElfVlLJiFSbYXaoX-lMA"
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 # Инициализируем клиента нейросети Google
 ai_client = genai.Client(api_key=GOOGLE_API_KEY)
 # ГЛАВНАЯ СТРАНИЦА ПОИСКА
