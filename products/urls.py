@@ -1,13 +1,21 @@
 from django.urls import path
 from . import views
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
-    # Главная страница поиска (то, что отдаёт HTML)
-    path('', views.search_page, name='search_page'),
-
-    # API для текстового поиска (JSON)
+    # Поиск
     path('api/search/', views.search_by_text_api, name='search_by_text_api'),
-
-    # API для поиска по фото (JSON)
     path('api/search-by-photo/', views.search_by_photo, name='search_by_photo'),
+
+    # Детали и калькулятор (доступно гостям)
+    path('api/medications/<int:med_id>/', views.get_medication_details, name='medication_details'),
+    path('api/calculate-cost/', views.calculate_course_cost, name='calculate_cost'),
+
+    # Личный кабинет (только для авторизованных)
+    path('api/profile/', views.my_profile, name='my_profile'),
+    path('api/my-medications/', views.my_medications, name='my_medications'),
+
+    # Токены для мобильного приложения (вход/обновление)
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
