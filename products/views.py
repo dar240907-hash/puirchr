@@ -217,3 +217,45 @@ def my_medications(request):
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+from .models import Medication, UserMedication, UserProfile, Pharmacy, PharmacyPrice
+from .serializers import MedicationSerializer, UserMedicationSerializer, UserProfileSerializer, PharmacyPriceSerializer
+
+# ... (старый код views.py) ...
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_prices_on_map(request):
+    """
+    Возвращает список аптек с координатами и ценами для конкретного лекарства.
+    Пример запроса: /api/map-prices/?medication_id=1
+    """
+    med_id = request.GET.get('medication_id')
+    if not med_id:
+        return Response({"error": "Укажите medication_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        med = Medication.objects.get(id=med_id)
+    except Medication.DoesNotExist:
+        return Response({"error": "Препарат не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Ищем все цены на это лекарство
+    prices = PharmacyPrice.objects.filter(medication=med).select_related('pharmacy')
+
+    result = []
+    for p in prices:
+        result.append({
+            "pharmacy_name": p.pharmacy.name,
+            "address": p.pharmacy.address,
+            "latitude": p.pharmacy.latitude,
+            "longitude": p.pharmacy.longitude,
+            "price": float(p.price),
+            "updated_at": p.updated_at.strftime("%Y-%m-%d %H:%M")
+        })
+
+    # Сортируем по цене (сначала дешевые)
+    result.sort(key=lambda x: x['price'])
+
+    return Response({
+        "medication": med.title,
+        "pharmacies": result
+    })

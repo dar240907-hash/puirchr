@@ -59,6 +59,9 @@ class UserProfile(models.Model):
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     discount_category = models.CharField(max_length=20, choices=DISCOUNT_CHOICES, default='none', verbose_name="Категория скидки")
+    notify_push = models.BooleanField(default=True, verbose_name="Пуш-уведомления")
+    notify_email = models.BooleanField(default=False, verbose_name="Email-уведомления")
+    notify_in_app = models.BooleanField(default=True, verbose_name="В приложении")
 
     def __str__(self):
         return f"{self.user.username} ({self.get_discount_category_display()})"
@@ -75,3 +78,33 @@ class UserMedication(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.medication.title}"
+# 5. АПТЕКИ (Для карты)
+class Pharmacy(models.Model):
+    name = models.CharField(max_length=255, verbose_name="Название аптеки")
+    address = models.CharField(max_length=500, verbose_name="Адрес")
+    latitude = models.FloatField(verbose_name="Широта (Latitude)")
+    longitude = models.FloatField(verbose_name="Долгота (Longitude)")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.address})"
+
+    class Meta:
+        verbose_name = "Аптека"
+        verbose_name_plural = "Аптеки"
+
+
+# 6. ЦЕНЫ В АПТЕКАХ (Связь лекарства и аптеки)
+class PharmacyPrice(models.Model):
+    pharmacy = models.ForeignKey(Pharmacy, on_delete=models.CASCADE, related_name='prices')
+    medication = models.ForeignKey(Medication, on_delete=models.CASCADE, related_name='pharmacy_prices')
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена (BYN)")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления цены")
+
+    def __str__(self):
+        return f"{self.medication.title} в {self.pharmacy.name} - {self.price} BYN"
+
+    class Meta:
+        verbose_name = "Цена в аптеке"
+        verbose_name_plural = "Цены в аптеках"
+        unique_together = ('pharmacy', 'medication') # В одной аптеке у одного лекарства одна цена
