@@ -1,0 +1,24 @@
+{% load l10n %}
+<article class="card med-card"
+         data-title="{{ m.title }}"
+         data-status="{{ m.sanction_status }}"
+         data-by="{% if m.is_by %}1{% else %}0{% endif %}"
+         data-price="{{ m.base_price|unlocalize }}">
+  <figure class="med-card__media">
+    {% if m.image %}
+      <img class="pic" src="{{ m.image.url }}" alt="{{ m.title }}" loading="lazy">
+    {% else %}
+      {% include "partials/pic.html" with kind=m.pic_kind color=m.pic_color pill=m.pic_pill %}
+    {% endif %}
+    <span class="tag-country{% if not m.is_by %} tag-country--foreign{% endif %}">{{ m.country }}</span>
+    <span class="status-pill {{ m.status_class }}">{{ m.status_label }}</span>
+  </figure>
+  <div class="med-card__body">
+    <h3 class="med-card__title"><a href="{% url 'medication' m.pk %}">{{ m.title }}</a></h3>
+    <p class="med-card__inn">{{ m.inn_name }}{% if m.dosage %} · {{ m.dosage }}{% endif %}</p>
+    <div class="med-card__foot">
+      <span class="price">{{ m.base_price|floatformat:2 }} <small>BYN</small></span>
+      <a class="link-arrow" href="{% url 'medication' m.pk %}">Падрабязней {% include "partials/icon.html" with name="arrow-right" %}</a>
+    </div>
+  </div>
+</article>

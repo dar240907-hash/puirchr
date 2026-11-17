@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Мая аптэчка — Шукай Сваё{% endblock %}
+
+{% block content %}
+<section class="page">
+  <div class="container">
+    <div class="kit-head">
+      <div>
+        <h1 class="page__title">Мая аптэчка</h1>
+        <p class="page__lead" style="margin-top:12px">Сочыце за запасам лекаў і атрымлівайце напамінкі.</p>
+      </div>
+      <div class="kit-head__actions">
+        <button class="btn btn--ghost" type="button" data-notify-btn>{% include "partials/icon.html" with name="bell" %}Напамінкі ў браўзеры</button>
+        <button class="btn btn--primary" type="button" data-kit-add>{% include "partials/icon.html" with name="plus" %}Дадаць прэпарат</button>
+      </div>
+    </div>
+
+    <p class="form-hint" style="margin-top:16px" data-notify-hint hidden>Напамінкі працуюць, пакуль гэтая старонка адкрытая ў браўзеры.</p>
+
+    <div class="kit-grid" data-kit-grid aria-live="polite"></div>
+    <div class="card kit-empty" data-kit-empty hidden>
+      {% include "partials/icon.html" with name="pill" %}
+      <p>У аптэчцы пакуль нічога няма.</p>
+    </div>
+  </div>
+</section>
+
+<dialog class="modal" data-kit-dialog aria-labelledby="kit-dialog-title">
+  <form class="modal__body form" data-kit-form novalidate>
+    <div class="modal__head">
+      <h2 id="kit-dialog-title" data-kit-title>Дадаць прэпарат</h2>
+      <button class="modal__close" type="button" data-kit-close aria-label="Закрыць">{% include "partials/icon.html" with name="x" %}</button>
+    </div>
+
+    <div data-pick-block class="form">
+      <div class="field">
+        <label for="kit-search">Прэпарат</label>
+        <div class="picker">
+          <input class="input" id="kit-search" placeholder="Назва або МНН" autocomplete="off">
+          <button class="btn btn--primary btn--sm" type="button" data-pick-search>{% include "partials/icon.html" with name="search" %}Знайсці</button>
+        </div>
+      </div>
+      <div class="pick-list" data-pick-list></div>
+    </div>
+
+    <div class="selected-med" data-selected hidden>{% include "partials/icon.html" with name="check" %}<span data-selected-title></span></div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label for="kit-qty">Засталося таблетак/доз</label>
+        <input class="input" id="kit-qty" name="quantity_remaining" type="number" min="0" max="10000" value="20" required>
+      </div>
+      <div class="field">
+        <label for="kit-dose">Прыёмаў у дзень</label>
+        <input class="input" id="kit-dose" name="dosage_per_day" type="number" min="1" max="24" value="1" required>
+      </div>
+      <div class="field field--wide">
+        <label for="kit-days">Дзён да канца курсу</label>
+        <input class="input" id="kit-days" name="course_days_left" type="number" min="0" max="3650" value="7" required>
+      </div>
+      <div class="field field--wide">
+        <span class="field__label">Час напамінкаў</span>
+        <div class="time-inputs" data-times></div>
+      </div>
+    </div>
+
+    <div class="form-error" data-error hidden role="alert"></div>
+    <div class="actions">
+      <button class="btn btn--primary" type="submit">{% include "partials/icon.html" with name="check" %}Захаваць</button>
+      <button class="btn btn--ghost" type="button" data-kit-close>Скасаваць</button>
+    </div>
+  </form>
+</dialog>
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'js/kit.js' %}" defer></script>{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <div class="hero__inner">
+      <div class="hero__head">
+        <span class="badge">Агрэгатар беларускіх аналагаў лекаў</span>
+        <h1 class="hero__title">Шукай сваё. <span>Знаходзі лепшае.</span></h1>
+        <p class="hero__sub">Знайдзі даступны беларускі аналаг лекаў па назве або фота ўпакоўкі</p>
+      </div>
+
+      <div class="card search-card">
+        <div class="search-card__head">
+          <span class="icon-box">{% include "partials/icon.html" with name="keyboard" %}</span>
+          <div>
+            <h2 class="search-card__title">Пошук па назве</h2>
+            <p class="search-card__hint">Гандлёвая назва або дзейная рэчыва</p>
+          </div>
+        </div>
+
+        <form class="search-form" action="{% url 'catalog' %}" method="get">
+          <label class="search-input">
+            {% include "partials/icon.html" with name="search" %}
+            <input type="search" name="q" placeholder="Увядзіце назву прэпарата або МНН..." autocomplete="off" aria-label="Назва прэпарата або МНН">
+          </label>
+          <button class="btn btn--primary" type="submit">{% include "partials/icon.html" with name="search" %}Шукаць</button>
+        </form>
+
+        <div class="chips-row">
+          <span>Напрыклад:</span>
+          <a class="chip-link" href="{% url 'catalog' %}?q=Нурофен">Нурофен</a>
+          <a class="chip-link" href="{% url 'catalog' %}?q=Ібупрафен">Ібупрафен</a>
+          <a class="chip-link" href="{% url 'catalog' %}?q=Сумамед">Сумамед</a>
+          <a class="chip-link" href="{% url 'catalog' %}?q=Конкор">Конкор</a>
+          <a class="chip-link" href="{% url 'catalog' %}?q=Вітамін D3">Вітамін D3</a>
+        </div>
+      </div>
+
+      <div class="photo-card">
+        <span class="icon-box">{% include "partials/icon.html" with name="scan-line" %}</span>
+        <span class="ai-badge">{% include "partials/icon.html" with name="sparkles" %}AI</span>
+        <h2 class="photo-card__title">Сфатаграфуйце ўпакоўку</h2>
+        <p class="photo-card__text">Штучны інтэлект распазнае назву і знойдзе аналагі</p>
+        <button class="btn btn--purple btn--block btn--lg" type="button" data-photo-trigger>
+          {% include "partials/icon.html" with name="camera" %}Загрузіць фота
+        </button>
+        <input type="file" accept="image/*" hidden data-photo-input>
+      </div>
+
+      <div class="result" data-result hidden aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="ornament ornament--divider" aria-hidden="true"></div>
+
+  <section class="features" aria-label="Перавагі">
+    <article class="card feature">
+      <span class="icon-box">{% include "partials/icon.html" with name="badge-percent" %}</span>
+      <h3>Эканомія да 75%</h3>
+      <p>Беларускія аналагі з тым жа дзейным рэчывам часта ў некалькі разоў танней.</p>
+    </article>
+    <article class="card feature">
+      <span class="icon-box">{% include "partials/icon.html" with name="shield-check" %}</span>
+      <h3>Статус даступнасці</h3>
+      <p>Бачыце адразу, ці прэпарат даступны, абмежаваны ці пад санкцыямі.</p>
+    </article>
+    <article class="card feature">
+      <span class="icon-box">{% include "partials/icon.html" with name="scan-search" %}</span>
+      <h3>Пошук па фота</h3>
+      <p>Не ведаеце, як пішацца назва? Проста сфатаграфуйце ўпакоўку.</p>
+    </article>
+    <article class="card feature">
+      <span class="icon-box">{% include "partials/icon.html" with name="factory" %}</span>
+      <h3>Мясцовыя вытворцы</h3>
+      <p>Барымед, Белмедпрэпараты, Лекфарм, Мінскінтэркапс і іншыя.</p>
+    </article>
+  </section>
+</div>
+
+<section class="section categories" style="margin-top:64px">
+  <div class="container">
+    <h2 class="section__title" style="margin-bottom:32px">Катэгорыі</h2>
+    <div class="cat-grid">
+      {% for c in categories %}
+      <a class="cat-card" href="{% url 'catalog' %}">
+        {% include "partials/pic.html" with kind=c.kind color=c.color pill=c.pill %}
+        <h3>{{ c.name }}</h3>
+        <p>{{ c.count_label }}</p>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section__head">
+      <div>
+        <h2 class="section__title">Папулярныя аналагі</h2>
+        <p class="section__sub">Беларускія прэпараты, якія замяняюць імпартныя</p>
+      </div>
+      <a class="link-arrow" href="{% url 'catalog' %}">Увесь каталог {% include "partials/icon.html" with name="arrow-right" %}</a>
+    </div>
+
+    <div class="med-grid">
+      {% for m in popular %}
+        {% include "partials/med_card.html" %}
+      {% empty %}
+        <p class="empty card">Пакуль няма прэпаратаў. Дадайце іх праз адмінку.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

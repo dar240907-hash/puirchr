@@ -1,0 +1,45 @@
+{% comment %}
+  Иллюстрация упаковки (когда у препарата нет загруженного фото).
+  Параметры: kind = blister | capsule | bottle, color = цвет полосы, pill = цвет таблеток/капсул.
+{% endcomment %}
+{% if kind == "bottle" %}
+<svg class="pic" viewBox="0 0 300 300" role="img" aria-label="Баначка з прэпаратам">
+  <ellipse cx="140" cy="262" rx="98" ry="9" fill="#0b2842" opacity=".08"/>
+  <rect x="94" y="52" width="82" height="38" rx="7" fill="#fff" stroke="#dfe5ec"/>
+  <path d="M104 52v38M114 52v38M124 52v38M134 52v38M144 52v38M154 52v38M164 52v38" stroke="#e8edf2" stroke-width="2"/>
+  <path d="M104 90h62v12c18 4 24 14 24 30v94a22 22 0 0 1-22 22H102a22 22 0 0 1-22-22v-94c0-16 6-26 24-30z" fill="#fff" stroke="#dfe5ec"/>
+  <rect x="80" y="150" width="110" height="26" fill="{{ color|default:'#f08a2c' }}"/>
+  <path d="M96 120v110" stroke="#f1f4f7" stroke-width="10" stroke-linecap="round"/>
+  <g transform="rotate(-22 214 246)"><ellipse cx="214" cy="246" rx="24" ry="12" fill="{{ pill|default:'#f6bf4b' }}"/><ellipse cx="208" cy="242" rx="9" ry="4" fill="#fff" opacity=".45"/></g>
+  <g transform="rotate(12 244 256)"><ellipse cx="244" cy="256" rx="22" ry="11" fill="{{ pill|default:'#f6bf4b' }}"/><ellipse cx="238" cy="252" rx="8" ry="4" fill="#fff" opacity=".45"/></g>
+</svg>
+{% else %}
+<svg class="pic" viewBox="0 0 300 300" role="img" aria-label="Упакоўка прэпарата">
+  <ellipse cx="150" cy="266" rx="108" ry="9" fill="#0b2842" opacity=".08"/>
+  <polygon points="48,92 60,78 132,78 120,92" fill="#fff" stroke="#dfe5ec"/>
+  <rect x="48" y="92" width="72" height="164" fill="#fff" stroke="#dfe5ec"/>
+  <polygon points="120,92 132,78 132,242 120,256" fill="#edf0f4" stroke="#dfe5ec"/>
+  <rect x="48" y="150" width="72" height="26" fill="{{ color|default:'#9fcdea' }}"/>
+  <polygon points="120,150 132,141 132,167 120,176" fill="{{ color|default:'#9fcdea' }}" opacity=".7"/>
+  <rect x="152" y="74" width="98" height="186" rx="10" fill="#c5cbd3" stroke="#b1b8c2"/>
+  <rect x="159" y="81" width="84" height="172" rx="7" fill="#e1e5ea"/>
+  {% if kind == "capsule" %}
+  <g fill="{{ pill|default:'#f5c04a' }}" stroke="#c9972a" stroke-width="1.2">
+    <ellipse cx="180" cy="105" rx="17" ry="10" transform="rotate(-35 180 105)"/><ellipse cx="222" cy="105" rx="17" ry="10" transform="rotate(-35 222 105)"/>
+    <ellipse cx="180" cy="139" rx="17" ry="10" transform="rotate(-35 180 139)"/><ellipse cx="222" cy="139" rx="17" ry="10" transform="rotate(-35 222 139)"/>
+    <ellipse cx="180" cy="173" rx="17" ry="10" transform="rotate(-35 180 173)"/><ellipse cx="222" cy="173" rx="17" ry="10" transform="rotate(-35 222 173)"/>
+    <ellipse cx="180" cy="207" rx="17" ry="10" transform="rotate(-35 180 207)"/><ellipse cx="222" cy="207" rx="17" ry="10" transform="rotate(-35 222 207)"/>
+    <ellipse cx="180" cy="241" rx="17" ry="10" transform="rotate(-35 180 241)"/><ellipse cx="222" cy="241" rx="17" ry="10" transform="rotate(-35 222 241)"/>
+  </g>
+  {% else %}
+  <g fill="{{ pill|default:'#ffffff' }}" stroke="#c3cad3" stroke-width="1.2">
+    <circle cx="180" cy="105" r="15"/><circle cx="222" cy="105" r="15"/>
+    <circle cx="180" cy="139" r="15"/><circle cx="222" cy="139" r="15"/>
+    <circle cx="180" cy="173" r="15"/><circle cx="222" cy="173" r="15"/>
+    <circle cx="180" cy="207" r="15"/><circle cx="222" cy="207" r="15"/>
+    <circle cx="180" cy="241" r="15"/><circle cx="222" cy="241" r="15"/>
+  </g>
+  {% endif %}
+  <line x1="201" y1="88" x2="201" y2="248" stroke="#c3cad3" stroke-width="1.5"/>
+</svg>
+{% endif %}

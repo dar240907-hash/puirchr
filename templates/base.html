@@ -1,0 +1,87 @@
+{% load static %}{% url 'medication' 0 as url_medication %}{% url 'my_medication_detail' 0 as api_kit_item %}{% url 'medication_details' 0 as api_medication %}<!DOCTYPE html>
+<html lang="be">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Шукай Сваё — агрэгатар беларускіх аналагаў лекаў{% endblock %}</title>
+  <meta name="description" content="Знайдзі даступны беларускі аналаг лекаў па назве або фота ўпакоўкі.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body
+  data-api-search="{% url 'search_by_text_api' %}"
+  data-api-photo="{% url 'search_by_photo' %}"
+  data-api-token="{% url 'token_obtain_pair' %}"
+  data-api-refresh="{% url 'token_refresh' %}"
+  data-api-register="{% url 'register' %}"
+  data-api-profile="{% url 'my_profile' %}"
+  data-api-kit="{% url 'my_medications' %}"
+  data-api-kit-item="{{ api_kit_item }}"
+  data-api-calc="{% url 'calculate_cost' %}"
+  data-api-map="{% url 'map_prices' %}"
+  data-api-medication="{{ api_medication }}"
+  data-url-home="{% url 'home' %}"
+  data-url-catalog="{% url 'catalog' %}"
+  data-url-login="{% url 'login' %}"
+  data-url-profile="{% url 'profile' %}"
+  data-url-kit="{% url 'my_kit' %}"
+  data-url-medication="{{ url_medication }}">
+  {% include "partials/sprite.html" %}
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="{% url 'home' %}" aria-label="Шукай Сваё — галоўная">
+        <span class="logo__mark">{% include "partials/icon.html" with name="plus" %}</span>
+        <span class="logo__text">Шукай <span>Сваё</span></span>
+      </a>
+
+      {% with current=request.resolver_match.url_name %}
+      <nav class="nav" aria-label="Асноўная навігацыя">
+        <a href="{% url 'catalog' %}"  class="{% if current == 'catalog' %}is-active{% endif %}">Каталог</a>
+        <a href="{% url 'my_kit' %}"   class="{% if current == 'my_kit' %}is-active{% endif %}" data-auth-only hidden>Мая аптэчка</a>
+        <a href="{% url 'about' %}"    class="{% if current == 'about' %}is-active{% endif %}">Аб праекце</a>
+        <a href="{% url 'contacts' %}" class="{% if current == 'contacts' %}is-active{% endif %}">Кантакты</a>
+      </nav>
+      {% endwith %}
+
+      <a class="btn btn--primary" href="{% url 'login' %}?next={{ request.path|urlencode }}" data-auth-slot>
+        {% include "partials/icon.html" with name="log-in" %}<span data-auth-label>Увайсці</span>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="ornament" aria-hidden="true"></div>
+    <div class="container">
+      <div class="disclaimer">
+        {% include "partials/icon.html" with name="triangle-alert" %}
+        <span>Інфармацыя носіць даведачны характар. Перад ужываннем пракансультуйцеся з урачом.</span>
+      </div>
+      <div class="site-footer__row">
+        <a class="logo logo--light" href="{% url 'home' %}">
+          <span class="logo__mark">{% include "partials/icon.html" with name="plus" %}</span>
+          <span class="logo__text">Шукай <span>Сваё</span></span>
+        </a>
+        <nav class="site-footer__nav" aria-label="Навігацыя ў падвале">
+          <a href="{% url 'catalog' %}">Каталог</a>
+          <a href="{% url 'about' %}">Аб праекце</a>
+          <a href="{% url 'contacts' %}">Кантакты</a>
+        </nav>
+      </div>
+      <p class="site-footer__copy">© 2026 Шукай Сваё. Усе правы абаронены.</p>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/auth.js' %}" defer></script>
+  <script src="{% static 'js/main.js' %}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Каталог прэпаратаў — Шукай Сваё{% endblock %}
+
+{% block content %}
+<section class="page">
+  <div class="container">
+
+    <div class="search-bar">
+      <form class="search-input" data-search-form role="search" style="flex:1;display:flex">
+        {% include "partials/icon.html" with name="search" %}
+        <input type="search" name="q" placeholder="Увядзіце назву прэпарата або МНН..." autocomplete="off" aria-label="Назва прэпарата або МНН" data-search-input>
+      </form>
+      <button class="btn btn--primary" type="button" data-search-submit>{% include "partials/icon.html" with name="search" %}Шукаць</button>
+      <div class="photo-btn-wrap">
+        <span class="ai-badge">{% include "partials/icon.html" with name="sparkles" %}AI</span>
+        <button class="btn btn--outline-purple" type="button" data-photo-trigger>{% include "partials/icon.html" with name="camera" %}Пошук па фота</button>
+        <input type="file" accept="image/*" hidden data-photo-input>
+      </div>
+    </div>
+
+    <div class="result" data-result hidden aria-live="polite"></div>
+
+    <div class="filters">
+      <div>
+        <div class="filter__label">Катэгорыя</div>
+        <div class="chips chips--scroll" data-filter="category">
+          <button class="chip is-active" type="button" data-value="all">Усе</button>
+          {% for c in categories %}
+          <button class="chip" type="button" data-value="{{ c.name }}">{{ c.name }}</button>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div>
+        <div class="filter__label">Статус</div>
+        <div class="chips" data-filter="status">
+          <button class="chip is-active" type="button" data-value="all">Любы</button>
+          <button class="chip" type="button" data-value="free"><span class="dot dot--green"></span>Даступны</button>
+          <button class="chip" type="button" data-value="restricted"><span class="dot dot--amber"></span>Абмежаваны</button>
+          <button class="chip" type="button" data-value="sanctioned"><span class="dot dot--red"></span>Пад санкцыямі</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="filter__label">Вытворца</div>
+        <div class="chips" data-filter="country">
+          <button class="chip is-active" type="button" data-value="all">Усе краіны</button>
+          <button class="chip" type="button" data-value="by">Толькі беларускія</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="catalog__head">
+      <div>
+        <h1 class="catalog__title">Каталог прэпаратаў</h1>
+        <p class="catalog__count" data-count>Знойдзена {{ medications|length }} прэпаратаў</p>
+      </div>
+      <div class="sort" data-filter="sort">
+        <span>Сартаваць:</span>
+        <button class="chip is-active" type="button" data-value="by">Беларускія спачатку</button>
+        <button class="chip" type="button" data-value="price">Па цане</button>
+      </div>
+    </div>
+
+    <div class="med-grid" data-med-grid>
+      {% for m in medications %}
+        {% include "partials/med_card.html" %}
+      {% endfor %}
+      <p class="empty card" data-empty {% if medications %}hidden{% endif %}>Па вашых фільтрах прэпаратаў не знойдзена.</p>
+    </div>
+
+    <section class="card legend" aria-labelledby="legend-title">
+      <h2 id="legend-title">Што азначаюць колеры статусу</h2>
+      <div class="legend__grid">
+        <div class="legend__item legend__item--green">
+          <h3>{% include "partials/icon.html" with name="circle-check" %}Даступны</h3>
+          <p>Даступны без абмежаванняў</p>
+        </div>
+        <div class="legend__item legend__item--amber">
+          <h3>{% include "partials/icon.html" with name="circle-alert" %}Абмежаваны</h3>
+          <p>Абмежаваная даступнасць — магчымыя перабоі з пастаўкамі</p>
+        </div>
+        <div class="legend__item legend__item--red">
+          <h3>{% include "partials/icon.html" with name="ban" %}Пад санкцыямі</h3>
+          <p>Пад санкцыямі — пастаўкі прыпынены</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</section>
+{% endblock %}

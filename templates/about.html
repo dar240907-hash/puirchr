@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Аб праекце — Шукай Сваё{% endblock %}
+
+{% block content %}
+<section class="page">
+  <div class="container">
+    <h1 class="page__title">Аб праекце</h1>
+    <p class="page__lead">«Шукай Сваё» — бясплатны агрэгатар, які дапамагае знайсці беларускі аналаг імпартных лекаў, параўнаць цэны і даведацца пра даступнасць прэпарата.</p>
+
+    <div class="about-grid">
+      <article class="card about-card">
+        {% include "partials/icon.html" with name="target" %}
+        <h3>Наша мэта</h3>
+        <p>Зрабіць пошук даступных лекаў простым для кожнага — ад студэнта да бабулі.</p>
+      </article>
+      <article class="card about-card">
+        {% include "partials/icon.html" with name="heart-pulse" %}
+        <h3>Падтрымка мясцовых</h3>
+        <p>Мы паказваем прэпараты беларускіх вытворцаў з тым жа дзейным рэчывам, што і імпартныя.</p>
+      </article>
+      <article class="card about-card">
+        {% include "partials/icon.html" with name="sparkles" %}
+        <h3>Штучны інтэлект</h3>
+        <p>Пошук па фота ўпакоўкі дапамагае, калі складана ўвесці назву з клавіятуры.</p>
+      </article>
+    </div>
+
+    <div class="note">
+      <strong>Важна</strong>
+      <p>Аналагі маюць тое ж дзейнае рэчыва, але могуць адрознівацца дапаможнымі кампанентамі. Не мяняйце прэпарат без кансультацыі з урачом або фармацэўтам.</p>
+    </div>
+
+    <a class="btn btn--primary btn--lg btn--cta" href="{% url 'catalog' %}">Перайсці ў каталог</a>
+  </div>
+</section>
+{% endblock %}

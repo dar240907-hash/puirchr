@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Уваход — Шукай Сваё{% endblock %}
+
+{% block content %}
+<section class="page">
+  <div class="container">
+    <div class="card auth">
+      <h1 class="auth__title">Сардэчна запрашаем</h1>
+      <p class="auth__lead">Увайдзіце, каб захоўваць лекі ў аптэчцы і ўлічваць скідкі.</p>
+
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" class="is-active" data-tab="login" aria-selected="true">Уваход</button>
+        <button type="button" role="tab" data-tab="register" aria-selected="false">Рэгістрацыя</button>
+      </div>
+
+      <form class="form" data-panel="login" novalidate>
+        <div class="field">
+          <label for="login-username">Імя карыстальніка</label>
+          <input class="input" id="login-username" name="username" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="login-password">Пароль</label>
+          <input class="input" id="login-password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="form-error" data-error hidden role="alert"></div>
+        <button class="btn btn--primary btn--lg btn--block" type="submit">{% include "partials/icon.html" with name="log-in" %}Увайсці</button>
+      </form>
+
+      <form class="form" data-panel="register" novalidate hidden>
+        <div class="field">
+          <label for="reg-username">Імя карыстальніка</label>
+          <input class="input" id="reg-username" name="username" autocomplete="username" minlength="3" required>
+        </div>
+        <div class="field">
+          <label for="reg-email">Электронная пошта <span class="form-hint">(неабавязкова)</span></label>
+          <input class="input" id="reg-email" name="email" type="email" autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="reg-password">Пароль</label>
+          <input class="input" id="reg-password" name="password" type="password" autocomplete="new-password" required>
+          <span class="form-hint">Не менш за 8 сімвалаў, не толькі лічбы.</span>
+        </div>
+        <div class="field">
+          <label for="reg-password2">Паўтарыце пароль</label>
+          <input class="input" id="reg-password2" name="password2" type="password" autocomplete="new-password" required>
+        </div>
+        <div class="form-error" data-error hidden role="alert"></div>
+        <button class="btn btn--primary btn--lg btn--block" type="submit">Стварыць акаўнт</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'js/login.js' %}" defer></script>{% endblock %}

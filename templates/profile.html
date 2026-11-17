@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Кабінет — Шукай Сваё{% endblock %}
+
+{% block content %}
+<section class="page">
+  <div class="container">
+    <h1 class="page__title">Кабінет</h1>
+    <p class="page__lead">Налады скідкі і апавяшчэнняў.</p>
+
+    <div class="profile-grid">
+      <form class="card panel form" data-profile-form>
+        <h2>{% include "partials/icon.html" with name="user" %}Профіль</h2>
+        <div class="user-line">
+          <span class="avatar" data-avatar>?</span>
+          <div><b data-username>…</b><span>Асабісты кабінет</span></div>
+        </div>
+
+        <div class="field">
+          <label for="discount">Катэгорыя скідкі</label>
+          <select class="select" id="discount" name="discount_category">
+            <option value="none">Без скідкі</option>
+            <option value="vov">Удзельнік ВАВ — 50%</option>
+            <option value="disabled">Інвалід — 30%</option>
+            <option value="pensioner">Пенсіянер — 10%</option>
+          </select>
+          <span class="form-hint">Скідка ўлічваецца ў калькулятары кошту курсу.</span>
+        </div>
+
+        <div class="form-error" data-error hidden role="alert"></div>
+        <div class="actions">
+          <button class="btn btn--primary" type="submit">{% include "partials/icon.html" with name="check" %}Захаваць</button>
+          <button class="btn btn--ghost btn--danger" type="button" data-logout>{% include "partials/icon.html" with name="log-out" %}Выйсці</button>
+        </div>
+      </form>
+
+      <form class="card panel form" data-notify-form>
+        <h2>{% include "partials/icon.html" with name="bell" %}Апавяшчэнні</h2>
+        <div>
+          <div class="toggle">
+            <div><b>Push-апавяшчэнні</b><span class="hint">Напамінкі пра прыём лекаў</span></div>
+            <label class="switch"><input type="checkbox" name="notify_push" aria-label="Push-апавяшчэнні"><span class="track"></span></label>
+          </div>
+          <div class="toggle">
+            <div><b>Email-апавяшчэнні</b><span class="hint">Паведамленні на электронную пошту</span></div>
+            <label class="switch"><input type="checkbox" name="notify_email" aria-label="Email-апавяшчэнні"><span class="track"></span></label>
+          </div>
+          <div class="toggle">
+            <div><b>У дадатку</b><span class="hint">Падказкі на сайце</span></div>
+            <label class="switch"><input type="checkbox" name="notify_in_app" aria-label="Апавяшчэнні ў дадатку"><span class="track"></span></label>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn--primary" type="submit">{% include "partials/icon.html" with name="check" %}Захаваць</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'js/profile.js' %}" defer></script>{% endblock %}

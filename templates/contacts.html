@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Кантакты — Шукай Сваё{% endblock %}
+
+{% block content %}
+<section class="page">
+  <div class="container">
+    <h1 class="page__title">Кантакты</h1>
+    <p class="page__lead">Знайшлі памылку ў цане або хочаце дадаць прэпарат? Напішыце нам.</p>
+
+    <div class="contact-grid">
+      <article class="card contact-card">
+        <span class="icon-box">{% include "partials/icon.html" with name="mail" %}</span>
+        <p class="contact-card__label">Электронная пошта</p>
+        <a class="contact-card__value" href="mailto:hello@shukaj-svayo.by">hello@shukaj-svayo.by</a>
+      </article>
+      <article class="card contact-card">
+        <span class="icon-box">{% include "partials/icon.html" with name="phone" %}</span>
+        <p class="contact-card__label">Тэлефон</p>
+        <a class="contact-card__value" href="tel:+375170000000">+375 17 000-00-00</a>
+      </article>
+      <article class="card contact-card">
+        <span class="icon-box">{% include "partials/icon.html" with name="map-pin" %}</span>
+        <p class="contact-card__label">Адрас</p>
+        <p class="contact-card__value contact-card__value--plain">г. Мінск, Беларусь</p>
+      </article>
+    </div>
+  </div>
+</section>
+{% endblock %}

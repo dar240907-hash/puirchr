@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load static l10n %}
+
+{% block title %}{{ med.title }} — Шукай Сваё{% endblock %}
+
+{% block head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">{% endblock %}
+
+{% block content %}
+<section class="page" data-med
+         data-med-id="{{ med.pk }}"
+         data-pack="{{ med.pills_per_pack }}"
+         data-price="{{ med.base_price|unlocalize }}">
+  <div class="container">
+    <a class="back-link" href="{% url 'catalog' %}">{% include "partials/icon.html" with name="arrow-left" %}Да каталога</a>
+
+    <div class="detail">
+      <figure class="detail__media">
+        {% if med.image %}
+          <img class="pic" src="{{ med.image.url }}" alt="{{ med.title }}">
+        {% else %}
+          {% include "partials/pic.html" with kind=med.pic_kind color=med.pic_color pill=med.pic_pill %}
+        {% endif %}
+        <span class="tag-country{% if not med.is_by %} tag-country--foreign{% endif %}">{{ med.country }}</span>
+        <span class="status-pill {{ med.status_class }}">{{ med.status_label }}</span>
+      </figure>
+
+      <div>
+        <h1 class="detail__title">{{ med.title }}</h1>
+        <p class="detail__sub">{{ med.inn_name }}{% if med.dosage %} · {{ med.dosage }}{% endif %}</p>
+
+        <div class="detail__price">
+          <span class="price">{{ med.base_price|floatformat:2 }} <small>BYN</small></span>
+          <small>за ўпакоўку ({{ med.pills_per_pack }} шт.)</small>
+        </div>
+
+        {% if med.sanction_description %}
+        <div class="note note--status">
+          <strong>{{ med.status_label }}</strong>
+          <p>{{ med.sanction_description }}</p>
+        </div>
+        {% endif %}
+
+        <dl class="facts">
+          {% if med.brand %}<div><dt>Брэнд / вытворца</dt><dd>{{ med.brand }}</dd></div>{% endif %}
+          <div><dt>Краіна паходжання</dt><dd>{{ med.country }}</dd></div>
+          <div><dt>МНН (дзейнае рэчыва)</dt><dd>{{ med.inn_name }}</dd></div>
+          <div><dt>Дазіроўка</dt><dd>{{ med.dosage }}</dd></div>
+          <div><dt>Форма выпуску</dt><dd>{{ med.from_release }}</dd></div>
+          <div><dt>Штук ва ўпакоўцы</dt><dd>{{ med.pills_per_pack }}</dd></div>
+        </dl>
+
+        <div class="detail__actions">
+          <a class="btn btn--primary" href="{% url 'my_kit' %}?add={{ med.pk }}&amp;title={{ med.title|urlencode }}">{% include "partials/icon.html" with name="plus" %}Дадаць у маю аптэчку</a>
+          <a class="btn btn--ghost" href="#calculator">{% include "partials/icon.html" with name="calculator" %}Разлічыць кошт курсу</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="block" id="instruction">
+      <h2 class="block__title">{% include "partials/icon.html" with name="pill" %}Інструкцыя</h2>
+      {% if med.instruction %}
+        <div class="card prose">{{ med.instruction }}</div>
+      {% else %}
+        <div class="card prose prose--empty">Інструкцыя пакуль не дададзена.</div>
+      {% endif %}
+    </div>
+
+    {% if med.differences_text %}
+    <div class="block" id="differences">
+      <h2 class="block__title">{% include "partials/icon.html" with name="scan-search" %}Адрозненні ад імпартных аналагаў</h2>
+      <div class="card prose">{{ med.differences_text }}</div>
+    </div>
+    {% endif %}
+
+    <div class="block" id="analogs">
+      <h2 class="block__title">{% include "partials/icon.html" with name="heart-pulse" %}Аналагі</h2>
+      {% if analogs %}
+      <div class="analogs">
+        {% for a in analogs %}
+        <a class="analog" href="{% url 'medication' a.pk %}">
+          <div>
+            <b>{{ a.title }}</b>
+            <span>{{ a.country }} · {{ a.status_label }}</span>
+          </div>
+          <div class="analog__side">
+            <span class="price">{{ a.base_price|floatformat:2 }} <small>BYN</small></span>
+            {% if a.saving %}<br><span class="saving">таней на {{ a.saving }}%</span>{% endif %}
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      <p class="form-hint" style="margin-top:14px">Аналагі маюць тое ж дзейнае рэчыва, але могуць адрознівацца дапаможнымі кампанентамі. Не мяняйце прэпарат без кансультацыі з урачом або фармацэўтам.</p>
+      {% else %}
+      <p class="empty-line">Аналагі пакуль не знойдзены.</p>
+      {% endif %}
+    </div>
+
+    <div class="block" id="calculator">
+      <h2 class="block__title">{% include "partials/icon.html" with name="calculator" %}Калькулятар кошту курсу</h2>
+      <div class="card calc">
+        <form class="form" data-calc-form novalidate>
+          <div class="field">
+            <label for="calc-days">Працягласць курсу, дзён</label>
+            <input class="input" id="calc-days" name="days" type="number" min="1" max="365" value="7" required>
+          </div>
+          <div class="field">
+            <label for="calc-times">Прыёмаў у дзень</label>
+            <input class="input" id="calc-times" name="times" type="number" min="1" max="24" value="3" required>
+          </div>
+          <div class="form-error" data-error hidden role="alert"></div>
+          <button class="btn btn--primary" type="submit">Разлічыць</button>
+        </form>
+        <div class="calc__result" data-calc-result aria-live="polite">
+          <div class="skeleton"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block" id="pharmacies">
+      <h2 class="block__title">{% include "partials/icon.html" with name="map-pin" %}Цэны ў аптэках</h2>
+      <div data-map-block>
+        <div class="skeleton"></div>
+      </div>
+    </div>
+
+    <div class="block" id="ai-info">
+      <h2 class="block__title">{% include "partials/icon.html" with name="sparkles" %}Цэны і водгукі ад ШІ</h2>
+      <div class="ai-note">
+        {% include "partials/icon.html" with name="sparkles" %}
+        <span>Гэтыя звесткі сфармаваны штучным інтэлектам і могуць быць недакладнымі. Гэта не рэальныя водгукі пакупнікоў — правярайце цэны ў аптэцы.</span>
+      </div>
+      <div data-ai-block>
+        <div class="price-rows"><div class="skeleton"></div><div class="skeleton"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" defer></script>
+<script src="{% static 'js/medication.js' %}" defer></script>
+{% endblock %}
