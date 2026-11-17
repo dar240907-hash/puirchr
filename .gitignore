@@ -18,3 +18,7 @@ db.sqlite3
 
 # Environment
 .env
+
+.DS_Store
+db.sqlite3
+
