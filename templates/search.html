@@ -27,7 +27,7 @@
         <div class="chips chips--scroll" data-filter="category">
           <button class="chip is-active" type="button" data-value="all">Усе</button>
           {% for c in categories %}
-          <button class="chip" type="button" data-value="{{ c.name }}">{{ c.name }}</button>
+          <button type="button" class="chip" data-value="{{ c.id }}">{{ c.name }}</button>
           {% endfor %}
         </div>
       </div>

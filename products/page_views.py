@@ -31,19 +31,6 @@ PIC_PALETTE = [
     ('blister', '#a5dba8', '#ffffff'),
     ('blister', '#b266d9', '#c9a2ec'),
 ]
-
-# TODO: в модели Medication нет поля category — пока список статичный (как в макете).
-# Когда добавите поле, считайте количество через annotate/Count.
-CATEGORIES = [
-    {'name': 'Абязбольвальныя', 'count_label': '6 прэпаратаў', 'pic': 0},
-    {'name': 'Сардэчна-сасудзістыя', 'count_label': '5 прэпаратаў', 'pic': 1},
-    {'name': 'Антыбіётыкі', 'count_label': '4 прэпараты', 'pic': 2},
-    {'name': 'Вітаміны', 'count_label': '3 прэпараты', 'pic': 3},
-    {'name': 'Ад алергіі', 'count_label': '4 прэпараты', 'pic': 4},
-    {'name': 'Для страўніка', 'count_label': '4 прэпараты', 'pic': 5},
-]
-
-
 def _is_belarus(med):
     return (med.country or '').strip().lower() in BELARUS_NAMES
 
@@ -65,13 +52,39 @@ def _decorate(meds):
         result.append(med)
     return result
 
+# TODO: в модели Medication нет поля category — пока список статичный (как в макете).
+# Когда добавите поле, считайте количество через annotate/Count.
+CATEGORIES = [
+    {'id': 'painkillers', 'name': 'Абязбольвальныя', 'pic': 0},
+    {'id': 'cardio', 'name': 'Сардэчна-сасудзістыя', 'pic': 1},
+    {'id': 'antibiotics', 'name': 'Антыбіётыкі', 'pic': 2},
+    {'id': 'vitamins', 'name': 'Вітаміны', 'pic': 3},
+    {'id': 'allergy', 'name': 'Ад алергіі', 'pic': 4},
+    {'id': 'stomach', 'name': 'Для страўніка', 'pic': 5},
+]
+
+def _plural_be(n):
+    m10, m100 = n % 10, n % 100
+    if m10 == 1 and m100 != 11:
+        return f"{n} прэпарат"
+    if 2 <= m10 <= 4 and not (12 <= m100 <= 14):
+        return f"{n} прэпараты"
+    return f"{n} прэпаратаў"
 
 def _categories():
     items = []
     for cat in CATEGORIES:
         kind, color, pill = PIC_PALETTE[cat['pic']]
-        items.append({**cat, 'kind': kind, 'color': color, 'pill': pill})
+        count = Medication.objects.filter(category=cat['id']).count()
+        items.append({
+            **cat,
+            'count_label': _plural_be(count),
+            'kind': kind,
+            'color': color,
+            'pill': pill,
+        })
     return items
+
 
 
 def home_page(request):

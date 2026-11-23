@@ -44,6 +44,23 @@ class Medication(Product):
     differences_text = models.TextField(blank=True, null=True, verbose_name="Отличия от импортных аналогов")
     pills_per_pack = models.IntegerField(default=20, verbose_name="Кол-во таблеток в упаковке") # Пригодится для калькулятора
 
+    CATEGORY_CHOICES = [
+        ('painkillers', 'Абязбольвальныя'),
+        ('cardio', 'Сардэчна-сасудзістыя'),
+        ('antibiotics', 'Антыбіётыкі'),
+        ('vitamins', 'Вітаміны'),
+        ('allergy', 'Ад алергіі'),
+        ('stomach', 'Для страўніка'),
+    ]
+    category = models.CharField(
+        max_length=30,
+        choices=CATEGORY_CHOICES,
+        blank=True,
+        default='',
+        verbose_name="Категория"
+    )
+
+
     class Meta:
         verbose_name = "Медикамент"
         verbose_name_plural = "Медикаменты"

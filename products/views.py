@@ -17,6 +17,24 @@ from google.genai import types
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 ai_client = genai.Client(api_key=GOOGLE_API_KEY)
+MODELS_PRIORITY = [
+    'gemini-3.5-flash-lite',
+    'gemini-3.8-flash',
+    'gemini-3.1-pro-preview',
+]
+
+
+def ask_gemini(contents):
+    last_error = None
+    for model_name in MODELS_PRIORITY:
+        try:
+            return ai_client.models.generate_content(model=model_name, contents=contents)
+        except Exception as e:
+            last_error = e
+            if '503' in str(e) or '429' in str(e) or '404' in str(e):
+                continue
+            raise
+    raise last_error
 
 # ==========================================
 # ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ИИ (GEMINI)
@@ -31,7 +49,7 @@ def get_inn_from_gemini(product_name: str) -> str | None:
         "Никаких пояснений, точек, кавычек или лишних слов."
     )
     try:
-        response = ai_client.models.generate_content(model='gemini-2.5-flash', contents=prompt)
+        response = ask_gemini(prompt)
         inn = response.text.strip().strip('.,"\'')
         return inn if inn else None
     except Exception as e:
@@ -47,7 +65,7 @@ def get_prices_and_reviews_from_ai(product_name: str):
         f"{{\"prices\": [{{\"pharmacy\": \"Название\", \"price\": 10.50, \"link\": \"url\"}}], \"reviews\": [{{\"author\": \"Имя\", \"text\": \"Текст отзыва\", \"rating\": 5}}]}}"
     )
     try:
-        response = ai_client.models.generate_content(model='gemini-2.5-flash', contents=prompt)
+        response = ask_gemini(prompt)
         text = response.text.strip().replace('```json', '').replace('```', '')
         return json.loads(text)
     except Exception as e:
@@ -98,7 +116,7 @@ def search_by_photo(request):
             image_bytes = uploaded_image.read()
             image_part = types.Part.from_bytes(data=image_bytes, mime_type=uploaded_image.content_type)
             prompt = "Ты — встроенный модуль распознавания товаров для аптечного сайта. Прочитай название лекарства на фото и выведи ТОЛЬКО название на русском языке. Без лишних слов."
-            response = ai_client.models.generate_content(model='gemini-2.5-flash', contents=[image_part, prompt])
+            response = ask_gemini([image_part, prompt])
             recognized_text = response.text.strip()
 
             found_product = Medication.objects.filter(Q(title__icontains=recognized_text) | Q(inn_name__icontains=recognized_text)).first()
